@@ -1,5 +1,7 @@
 # ⚡ L402 Playground
 
+**[🔴 Live Demo](https://wthrajat.github.io/l402-playground/)**
+
 An interactive, browser-based explorer for the [L402 Lightning Authentication Protocol](https://l402.org/). Walk through the full protocol flow — from initial request to authenticated access — without needing a Lightning node, API keys, or any external services.
 
 Everything runs in your browser using simulated macaroons, invoices, and preimages generated via the Web Crypto API.
