@@ -109,8 +109,6 @@ The inspector panel on the right shows the decoded macaroon structure — click 
 
 ![Step 2 - 402 Challenge](./src/assets/step-2.png)
 
-![Macaroon Inspector](./src/assets/mac.png)
-
 ---
 
 ### Step 3: Pay the Lightning Invoice
