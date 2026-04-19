@@ -28,15 +28,15 @@ Client                                          Server
   │                                                │
   │──── GET /api/resource ────────────────────────▶│
   │                                                │
-  │◀─── 402 + Macaroon + Lightning Invoice ───────│
+  │◀─── 402 + Macaroon + Lightning Invoice ────────│
   │                                                │
-  │──── Pay Invoice (Lightning Network) ──────────▶│  ⚡
-  │◀─── Preimage (proof of payment) ──────────────│
+  │──── Pay Invoice (Lightning Network) ──────────▶│
+  │◀─── Preimage (proof of payment) ───────────────│
   │                                                │
   │──── GET /api/resource ────────────────────────▶│
   │     Authorization: L402 <macaroon>:<preimage>  │
   │                                                │
-  │◀─── 200 OK + Data ───────────────────────────│  ✅
+  │◀─── 200 OK + Data ─────────────────────────────│
   │                                                │
 ```
 ---
