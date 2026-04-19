@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>L402 Playground — Interactive Lightning Auth Protocol Explorer</title>
+  <meta name="description" content="Explore the L402 Lightning Network authentication protocol interactively. Simulate 402 challenges, Lightning payments, and macaroon-based access in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="ambient-bg">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <div class="logo-icon">⚡</div>
+          <div class="logo-text">
+            <h1>L402 <span class="accent">Playground</span></h1>
+            <p class="tagline">Interactive Lightning Authentication Protocol Explorer</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <a href="https://github.com/Roasbeef/blips/blob/L402/blip-0026.md" target="_blank" rel="noopener" class="btn btn-ghost">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            bLIP-0026
+          </a>
+          <button id="btn-reset" class="btn btn-ghost" title="Reset playground">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+            Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <nav class="step-nav">
+      <div class="step-track">
+        <div class="step-progress-line"></div>
+        <div class="step-progress-fill" id="progress-fill"></div>
+        <button class="step-dot active" data-step="0">
+          <span class="step-num">1</span>
+          <span class="step-label">Request</span>
+        </button>
+        <button class="step-dot" data-step="1">
+          <span class="step-num">2</span>
+          <span class="step-label">Challenge</span>
+        </button>
+        <button class="step-dot" data-step="2">
+          <span class="step-num">3</span>
+          <span class="step-label">Payment</span>
+        </button>
+        <button class="step-dot" data-step="3">
+          <span class="step-num">4</span>
+          <span class="step-label">Access</span>
+        </button>
+      </div>
+    </nav>
+
+    <main class="playground">
+      <section class="flow-panel">
+        <div class="step-card active" id="step-0">
+          <div class="step-header">
+            <div class="step-badge request">Step 1</div>
+            <h2>Request Protected Resource</h2>
+            <p>Client sends a standard HTTP request to an L402-protected endpoint.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="method get">GET</span>
+              <span class="url">/api/v1/bitcoin/analytics</span>
+            </div>
+            <pre><code><span class="h-key">Host</span>: <span class="h-val">data.lightning.services</span>
+<span class="h-key">Accept</span>: <span class="h-val">application/json</span>
+<span class="h-key">User-Agent</span>: <span class="h-val">L402-Playground/1.0</span></code></pre>
+          </div>
+          <button class="btn btn-primary btn-action" id="btn-send-request">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Request
+          </button>
+        </div>
+
+        <div class="step-card" id="step-1">
+          <div class="step-header">
+            <div class="step-badge challenge">Step 2</div>
+            <h2>Receive 402 Challenge</h2>
+            <p>Server responds with HTTP 402 containing a Lightning invoice and macaroon.</p>
+          </div>
+          <div class="code-block response-402">
+            <div class="code-header">
+              <span class="status s402">402 Payment Required</span>
+            </div>
+            <pre><code id="challenge-response"><!-- Filled dynamically --></code></pre>
+          </div>
+          <div class="challenge-details">
+            <div class="detail-card">
+              <div class="detail-icon">🎫</div>
+              <div class="detail-info">
+                <h4>Macaroon</h4>
+                <p id="macaroon-preview" class="mono">Loading...</p>
+              </div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-icon">⚡</div>
+              <div class="detail-info">
+                <h4>Lightning Invoice</h4>
+                <p id="invoice-preview" class="mono">Loading...</p>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-amber btn-action" id="btn-pay-invoice">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Pay Invoice
+          </button>
+        </div>
+
+        <div class="step-card" id="step-2">
+          <div class="step-header">
+            <div class="step-badge payment">Step 3</div>
+            <h2>Lightning Payment</h2>
+            <p>Client pays the invoice and receives the cryptographic preimage as proof.</p>
+          </div>
+          <div class="payment-visual">
+            <div class="payment-animation" id="payment-animation">
+              <div class="payment-bolt">⚡</div>
+              <div class="payment-ring"></div>
+              <div class="payment-ring ring-2"></div>
+              <div class="payment-ring ring-3"></div>
+            </div>
+            <div class="payment-details">
+              <div class="payment-row">
+                <span class="payment-label">Amount</span>
+                <span class="payment-value" id="payment-amount">100 sats</span>
+              </div>
+              <div class="payment-row">
+                <span class="payment-label">Status</span>
+                <span class="payment-value payment-status" id="payment-status">Pending</span>
+              </div>
+              <div class="payment-row">
+                <span class="payment-label">Preimage</span>
+                <span class="payment-value mono" id="payment-preimage">—</span>
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-action" id="btn-access-resource">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Access Resource
+          </button>
+        </div>
+
+        <div class="step-card" id="step-3">
+          <div class="step-header">
+            <div class="step-badge success">Step 4</div>
+            <h2>Authenticated Access</h2>
+            <p>Client presents the L402 token (macaroon + preimage) to access the resource.</p>
+          </div>
+          <div class="code-block">
+            <div class="code-header">
+              <span class="method get">GET</span>
+              <span class="url">/api/v1/bitcoin/analytics</span>
+            </div>
+            <pre><code id="auth-request"><!-- Filled dynamically --></code></pre>
+          </div>
+          <div class="code-block response-200">
+            <div class="code-header">
+              <span class="status s200">200 OK</span>
+            </div>
+            <pre><code id="success-response"><!-- Filled dynamically --></code></pre>
+          </div>
+          <div class="success-banner" id="success-banner">
+            <div class="success-icon">✓</div>
+            <div class="success-text">
+              <h4>Access Granted!</h4>
+              <p>The server verified the L402 token cryptographically — no accounts, no API keys, no KYC.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <aside class="inspector">
+        <div class="inspector-header">
+          <h3>🔍 Protocol Inspector</h3>
+          <div class="inspector-tabs">
+            <button class="tab active" data-tab="flow">Flow</button>
+            <button class="tab" data-tab="macaroon">Macaroon</button>
+            <button class="tab" data-tab="about">About</button>
+          </div>
+        </div>
+
+        <div class="tab-content active" id="tab-flow">
+          <div class="flow-diagram">
+            <div class="flow-entity">
+              <div class="entity-icon">💻</div>
+              <span>Client</span>
+            </div>
+            <div class="flow-messages" id="flow-messages">
+              <div class="flow-msg pending" id="msg-1">
+                <div class="msg-arrow right">→</div>
+                <div class="msg-label">GET /api/v1/bitcoin/analytics</div>
+              </div>
+              <div class="flow-msg pending" id="msg-2">
+                <div class="msg-arrow left">←</div>
+                <div class="msg-label">402 + Macaroon + Invoice</div>
+              </div>
+              <div class="flow-msg pending" id="msg-3">
+                <div class="msg-arrow right">⚡</div>
+                <div class="msg-label">Pay Lightning Invoice</div>
+              </div>
+              <div class="flow-msg pending" id="msg-4">
+                <div class="msg-arrow right">→</div>
+                <div class="msg-label">GET + Authorization: L402</div>
+              </div>
+              <div class="flow-msg pending" id="msg-5">
+                <div class="msg-arrow left">←</div>
+                <div class="msg-label">200 OK + Data</div>
+              </div>
+            </div>
+            <div class="flow-entity">
+              <div class="entity-icon">🖥️</div>
+              <span>Server</span>
+            </div>
+          </div>
+          <div class="flow-explanation" id="flow-explanation">
+            <p>Click <strong>"Send Request"</strong> to begin the L402 authentication flow.</p>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-macaroon">
+          <div class="macaroon-inspector" id="macaroon-inspector">
+            <div class="macaroon-empty">
+              <div class="empty-icon">🎫</div>
+              <p>No macaroon generated yet. Complete Step 2 to inspect the macaroon token.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="tab-about">
+          <div class="about-content">
+            <h4>What is L402?</h4>
+            <p>L402 is an internet-native authentication protocol that leverages the HTTP <code>402 Payment Required</code> status code combined with Lightning Network payments and Macaroon tokens.</p>
+            
+            <h4>Key Properties</h4>
+            <ul>
+              <li><strong>No accounts needed</strong> — authentication via proof of payment</li>
+              <li><strong>Instant micropayments</strong> — pay fractions of a cent per request</li>
+              <li><strong>Machine-friendly</strong> — designed for AI agents and automation</li>
+              <li><strong>Privacy-preserving</strong> — no personal data required</li>
+              <li><strong>Cryptographically verifiable</strong> — stateless server-side validation</li>
+            </ul>
+
+            <h4>Specification</h4>
+            <p>Formalized as <a href="https://github.com/lightning/blips/blob/master/blip-0026.md" target="_blank" rel="noopener">bLIP-0026</a> in the Bitcoin Lightning Improvement Proposals.</p>
+
+            <h4>Components</h4>
+            <div class="component-list">
+              <div class="component">
+                <span class="component-name">Macaroon</span>
+                <span class="component-desc">Bearer token with attenuable caveats</span>
+              </div>
+              <div class="component">
+                <span class="component-name">Lightning Invoice</span>
+                <span class="component-desc">BOLT11 payment request for sats</span>
+              </div>
+              <div class="component">
+                <span class="component-name">Preimage</span>
+                <span class="component-desc">SHA-256 proof of payment</span>
+              </div>
+              <div class="component">
+                <span class="component-name">L402 Token</span>
+                <span class="component-desc">macaroon:preimage sent in Authorization header</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="footer">
+      <p>Built for learning. No real Lightning payments involved. <span class="separator">•</span> <a href="https://l402.org" target="_blank" rel="noopener">l402.org</a></p>
+    </footer>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
