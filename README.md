@@ -4,7 +4,7 @@ An interactive, browser-based explorer for the [L402 Lightning Authentication Pr
 
 Everything runs in your browser using simulated macaroons, invoices, and preimages generated via the Web Crypto API.
 
-![L402 Playground Screenshot](./assets/hero.png)
+![L402 Playground Screenshot](./src/assets/hero.png)
 
 > [!IMPORTANT]
 > **This is a simulation / educational demo.** No real Lightning Network payments are made. All macaroons, BOLT11 invoices, and preimages are generated locally in your browser using the Web Crypto API. The cryptographic relationship between preimage and payment hash is real (SHA-256), but no sats move and no Lightning node is involved.
@@ -77,7 +77,7 @@ No credentials and no API key, just a plain request.
 
 Click **"Send Request"** to fire the request.
 
-![Step 1 - Send Request](./assets/hero.png)
+![Step 1 - Send Request](./src/assets/hero.png)
 
 ---
 
@@ -107,9 +107,9 @@ The inspector panel on the right shows the decoded macaroon structure — click 
 | **Caveats** | Restrictions — service name, tier, permissions, expiry |
 | **Signature** | Cryptographic signature binding everything together |
 
-![Step 2 - 402 Challenge](./assets/step-2.png)
+![Step 2 - 402 Challenge](./src/assets/step-2.png)
 
-![Macaroon Inspector](./assets/mac.png)
+![Macaroon Inspector](./src/assets/mac.png)
 
 ---
 
@@ -130,7 +130,7 @@ Click **"Pay Invoice"** to simulate the Lightning payment. You'll see:
 - The preimage revealed once settled
 - The status flipping to green
 
-![Step 3 - Payment](./assets/step-3.png)
+![Step 3 - Payment](./src/assets/step-3.png)
 
 ---
 
@@ -173,7 +173,7 @@ If everything checks out → **200 OK** with the requested data:
 ```
 Click **"Access Resource"** to complete the flow.
 
-![Step 4 - Access Granted](./assets/step-4.png)
+![Step 4 - Access Granted](./src/assets/step-4.png)
 
 ---
 
@@ -189,7 +189,7 @@ The right sidebar provides a real-time view of the protocol flow as a sequence d
 | `GET + Authorization: L402` | Client → Server | Authenticated request |
 | `200 OK + Data` | Server → Client | Successful response |
 
-![Protocol Inspector](./assets/protocol-inspector.png)
+![Protocol Inspector](./src/assets/protocol-inspector.png)
 
 ---
 
